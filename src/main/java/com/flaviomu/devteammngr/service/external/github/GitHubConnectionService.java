@@ -10,12 +10,12 @@ import java.io.IOException;
 
 @Service
 @Scope("application")
-public class GitHubConnection {
+public class GitHubConnectionService {
 
     private Logger log = LoggerFactory.getLogger(this.getClass().getName());
     private GitHub gitHub;
 
-    public GitHubConnection() {
+    public GitHubConnectionService() {
         try {
             gitHub = GitHub.connect();
         } catch (IOException e) {

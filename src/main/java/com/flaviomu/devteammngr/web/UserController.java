@@ -1,7 +1,7 @@
 package com.flaviomu.devteammngr.web;
 
 import com.flaviomu.devteammngr.data.entity.User;
-import com.flaviomu.devteammngr.service.external.github.GitHubConnection;
+import com.flaviomu.devteammngr.service.external.github.GitHubConnectionService;
 import com.flaviomu.devteammngr.service.domain.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private GitHubConnection gitHubConnection;
+    private GitHubConnectionService gitHubConnectionService;
 
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -62,7 +62,7 @@ public class UserController {
     @RequestMapping(value = "/{userId}/repositories", method = RequestMethod.GET)
     @ResponseBody
     public List<GHRepositoryOverview> getRepositoriesOverview(@PathVariable(value = "userId") Long userId) {
-        log.info(String.valueOf(gitHubConnection.getGitHub().hashCode()));
+        log.info(String.valueOf(gitHubConnectionService.getGitHub().hashCode()));
 
         return userService.getRepositoriesOverview(userId);
     }

@@ -6,7 +6,7 @@ import com.flaviomu.devteammngr.data.repository.UserRepository;
 import com.flaviomu.devteammngr.exception.BadRequestException;
 import com.flaviomu.devteammngr.exception.InternalServerErrorException;
 import com.flaviomu.devteammngr.exception.UserNotFoundException;
-import com.flaviomu.devteammngr.service.external.github.GitHubConnection;
+import com.flaviomu.devteammngr.service.external.github.GitHubConnectionService;
 import com.flaviomu.devteammngr.web.GHRepositoryOverview;
 import org.kohsuke.github.GHUser;
 import org.kohsuke.github.GitHub;
@@ -32,7 +32,7 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
-    private GitHubConnection gitHubConnection;
+    private GitHubConnectionService gitHubConnectionService;
 
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
@@ -120,7 +120,7 @@ public class UserService {
         if (user == null)
             throw new UserNotFoundException();
 
-        GitHub gitHub = gitHubConnection.getGitHub();
+        GitHub gitHub = gitHubConnectionService.getGitHub();
         GHUser ghUser;
         List<GHRepositoryOverview> ghRepositoryOverviews = new ArrayList<>();
 
