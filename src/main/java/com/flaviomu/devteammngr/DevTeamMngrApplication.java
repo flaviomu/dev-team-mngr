@@ -9,7 +9,6 @@ import org.springframework.context.annotation.Configuration;
 public class DevTeamMngrApplication {
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(DevTeamMngrApplication.class, args);
 	}
 }

@@ -1,10 +1,15 @@
-package com.flaviomu.devteammngr.service;
+package com.flaviomu.devteammngr.service.domain;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flaviomu.devteammngr.data.entity.User;
 import com.flaviomu.devteammngr.data.repository.UserRepository;
 import com.flaviomu.devteammngr.exception.BadRequestException;
+import com.flaviomu.devteammngr.exception.InternalServerErrorException;
 import com.flaviomu.devteammngr.exception.UserNotFoundException;
+import com.flaviomu.devteammngr.service.external.github.GitHubConnection;
+import com.flaviomu.devteammngr.web.GHRepositoryOverview;
+import org.kohsuke.github.GHUser;
+import org.kohsuke.github.GitHub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 @Service
 public class UserService {
 
@@ -24,6 +30,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private GitHubConnection gitHubConnection;
 
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
@@ -102,8 +111,41 @@ public class UserService {
     public void deleteUser(Long userId) {
         if (userRepository.findUserById(userId) == null)
             throw new UserNotFoundException();
-        
+
         userRepository.deleteById(userId);
     }
 
+    public List<GHRepositoryOverview> getRepositoriesOverview(Long userId) {
+        User user = userRepository.findUserById(userId);
+        if (user == null)
+            throw new UserNotFoundException();
+
+        GitHub gitHub = gitHubConnection.getGitHub();
+        GHUser ghUser;
+        List<GHRepositoryOverview> ghRepositoryOverviews = new ArrayList<>();
+
+        String ghUsername = user.getGitHubUrl().split("/")[user.getGitHubUrl().split("/").length - 1];
+        log.info("Getting Repositories Overviews for GitHub user: " + ghUsername);
+
+        try {
+            ghUser = gitHub.getUser(ghUsername);
+        } catch (IOException e) {
+            log.error("Error while retrieving GitHub user: " + ghUsername);
+            e.printStackTrace();
+            throw new InternalServerErrorException();
+        }
+
+        ghUser.listRepositories().asList().forEach(ghRepository -> {
+            GHRepositoryOverview overview = new GHRepositoryOverview();
+            overview.setOwnerName(ghRepository.getOwnerName());
+            overview.setName(ghRepository.getName());
+            overview.setDescription(ghRepository.getDescription());
+            overview.setLanguage(ghRepository.getLanguage());
+            ghRepositoryOverviews.add(overview);
+        });
+
+        log.debug("GitHub user: " + ghUsername + " - Repositories number: " + ghRepositoryOverviews.size());
+
+        return ghRepositoryOverviews;
+    }
 }

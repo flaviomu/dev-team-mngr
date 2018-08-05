@@ -24,7 +24,7 @@ public class User {
     private Position position;
 
     @Column(name="GITHUB_URL")
-    private String githubUrl;
+    private String gitHubUrl;
 
 
     public Long getId() {
@@ -59,11 +59,11 @@ public class User {
         this.position = position;
     }
 
-    public String getGithubUrl() {
-        return githubUrl;
+    public String getGitHubUrl() {
+        return gitHubUrl;
     }
 
-    public void setGithubUrl(String githubUrl) {
-        this.githubUrl = githubUrl;
+    public void setGitHubUrl(String gitHubUrl) {
+        this.gitHubUrl = gitHubUrl;
     }
 }

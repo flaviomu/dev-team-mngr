@@ -1,8 +1,10 @@
 package com.flaviomu.devteammngr.web;
 
 import com.flaviomu.devteammngr.data.entity.User;
-import com.flaviomu.devteammngr.exception.UserNotFoundException;
-import com.flaviomu.devteammngr.service.UserService;
+import com.flaviomu.devteammngr.service.external.github.GitHubConnection;
+import com.flaviomu.devteammngr.service.domain.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,8 +15,14 @@ import java.util.List;
 @RequestMapping(value = "/users")
 public class UserController {
 
+    Logger log = LoggerFactory.getLogger(this.getClass().getName());
+
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private GitHubConnection gitHubConnection;
+
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
@@ -50,5 +58,14 @@ public class UserController {
     public void deleteUser(@PathVariable(value = "userId") Long userId) {
         userService.deleteUser(userId);
     }
+
+    @RequestMapping(value = "/{userId}/repositories", method = RequestMethod.GET)
+    @ResponseBody
+    public List<GHRepositoryOverview> getRepositoriesOverview(@PathVariable(value = "userId") Long userId) {
+        log.info(String.valueOf(gitHubConnection.getGitHub().hashCode()));
+
+        return userService.getRepositoriesOverview(userId);
+    }
+
 
 }
