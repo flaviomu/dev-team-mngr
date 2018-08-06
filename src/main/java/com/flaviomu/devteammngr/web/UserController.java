@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
+/**
+ * Defines the controller exposing the API for the DEV TEAM MANAGER Application
+ */
 @Api(value = "devteammngr", description = "Operations available on the Dev Team Manager application")
 @RestController
 @RequestMapping(value = "/users")
@@ -29,6 +32,12 @@ public class UserController {
     private GitHubConnectionService gitHubConnectionService;
 
 
+    /**
+     * Creates a new user
+     *
+     * @param user the @{link User} to be created
+     * @return the @{link User} created
+     */
     @ApiOperation(value = "Add a user", response = User.class)
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
@@ -36,6 +45,13 @@ public class UserController {
         return userService.createUser(user);
     }
 
+
+    /**
+     * Retrieves a @{link User} given its id
+     *
+     * @param userId the @{link User} id of the user to be retrieved
+     * @return the @{link User} specified by the given id
+     */
     @ApiOperation(value = "Retrieve a user given its 'id' provided in the url", response = User.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "User not found.")
@@ -46,12 +62,26 @@ public class UserController {
         return userService.getUser(userId);
     }
 
+
+    /**
+     * Retrieves all the users
+     *
+     * @return the list of the @{link User}s existing
+     */
     @ApiOperation(value = "Retrieve all the user existing", response = List.class)
     @RequestMapping(method = RequestMethod.GET)
     public List<User> getUsers() {
         return userService.getUsers();
     }
 
+
+    /**
+     * Updates a @{link User} overwriting completely the associated info with the ones given
+     *
+     * @param userId the @{link User} id of the user to be updated
+     * @param user the @{link User} info to be saved
+     * @return the @{link User} updated
+     */
     @ApiOperation(value = "Update an existing user given its 'id' provided in the url", response = User.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "User not found"),
@@ -63,6 +93,14 @@ public class UserController {
         return userService.updateUserWithPut(userId, user);
     }
 
+
+    /**
+     * Updates a @{link User} overwriting only the fields given
+     *
+     * @param userId the @{link User} id of the user to be updated
+     * @param userJson the @{link User} fields to be saved
+     * @return the @{link User} updated
+     */
     @ApiOperation(value = "Update an existing user given its 'id' provided in the url", response = User.class)
     @ApiResponse(code = 404, message = "User not found")
     @RequestMapping(value = "/{userId}", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -71,6 +109,12 @@ public class UserController {
         return userService.updateUserWithPatch(userId, userJson);
     }
 
+
+    /**
+     * Deletes a @{link User} given its id
+     *
+     * @param userId the @{link User} id of the user to be deleted
+     */
     @ApiOperation(value = "Remove a user given its 'id' provided in the url")
     @ApiResponse(code = 404, message = "User not found")
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
@@ -79,6 +123,13 @@ public class UserController {
         userService.deleteUser(userId);
     }
 
+
+    /**
+     * Retrieves the GitHub repositories associated to the @{link User} specified by the given id
+     *
+     * @param userId the @{link User} id
+     * @return the list of @{link {@link GHRepositoryOverview}} owned by the specified user
+     */
     @ApiOperation(value = "Retrieve an overview of the GitHub repositories of a user given its 'id' provided in the url", response = List.class)
     @ApiResponses(value = {
             @ApiResponse(code = 404, message = "User not found"),

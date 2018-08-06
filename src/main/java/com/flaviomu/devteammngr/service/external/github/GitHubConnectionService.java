@@ -8,6 +8,11 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 
+
+/**
+ * Defines the service providing a connection to the GitHub APIs
+ *
+ */
 @Service
 @Scope("application")
 public class GitHubConnectionService {
@@ -15,6 +20,9 @@ public class GitHubConnectionService {
     private Logger log = LoggerFactory.getLogger(this.getClass().getName());
     private GitHub gitHub;
 
+    /**
+     * Creates the @{link {@link GitHubConnectionService} initialising the connection to GitHub}
+     */
     public GitHubConnectionService() {
         try {
             gitHub = GitHub.connect();

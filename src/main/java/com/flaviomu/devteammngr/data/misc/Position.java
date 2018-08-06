@@ -1,5 +1,12 @@
 package com.flaviomu.devteammngr.data.misc;
 
+
+import com.flaviomu.devteammngr.data.entity.User;
+
+
+/**
+ * Defines a position which is associated to a @{@link User}
+ */
 public enum Position {
 
     JUNIOR_DEV,
