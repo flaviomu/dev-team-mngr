@@ -4,6 +4,11 @@ import com.flaviomu.devteammngr.data.misc.Position;
 
 import javax.persistence.*;
 
+
+/**
+ * Defines a User
+ *
+ */
 @Entity
 @Table(name="USER")
 public class User {

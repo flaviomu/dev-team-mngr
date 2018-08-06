@@ -1,5 +1,9 @@
 package com.flaviomu.devteammngr.web;
 
+/**
+ * Defines a GitHub repository overview
+ *
+ */
 public class GHRepositoryOverview {
 
     private String ownerName;

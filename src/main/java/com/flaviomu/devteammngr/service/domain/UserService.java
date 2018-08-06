@@ -23,6 +23,10 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * Defines the service providing the functionality to manage a @{@link User}
+ *
+ */
 @Service
 public class UserService {
 
@@ -30,16 +34,29 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-
     @Autowired
     private GitHubConnectionService gitHubConnectionService;
 
+
+    /**
+     * Retrieves all the users
+     *
+     * @return the list of the @{link User}s existing
+     */
     public List<User> getUsers() {
         List<User> users = new ArrayList<>();
         userRepository.findAll().forEach(user -> users.add(user));
         return users;
     }
 
+
+    /**
+     * Retrieves the user given its id
+     *
+     * @param userId the @{link User} id of the user to be retrieved
+     * @return the @{link User} specified by the given id
+     * @throws UserNotFoundException
+     */
     public User getUser(Long userId) throws UserNotFoundException {
         User user = userRepository.findUserById(userId);
         if (user == null)
@@ -48,10 +65,27 @@ public class UserService {
         return user;
     }
 
+
+    /**
+     * Creates a new @{link User}
+     *
+     * @param user the info correlated to the @{link User} to be created
+     * @return the @{link User} created
+     */
     public User createUser(User user) {
         return userRepository.save(user);
     }
 
+
+    /**
+     * Updates a @{link User} overwriting completely the associated info with the ones given
+     *
+     * @param userId the @{link User} id of the user to be updated
+     * @param user the @{link User} info to be saved
+     * @return the @{link User} updated
+     * @throws UserNotFoundException
+     * @throws BadRequestException
+     */
     public User updateUserWithPut(Long userId, User user) throws UserNotFoundException, BadRequestException {
         if (! userId.equals(user.getId()))
             throw new BadRequestException();
@@ -79,6 +113,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
+
+    /**
+     * Updates a @{link User} overwriting only the fields given
+     *
+     * @param userId the @{link User} id of the user to be updated
+     * @param patchUserJson the @{link User} fields to be saved
+     * @return the @{link User} updated
+     * @throws UserNotFoundException
+     */
     public User updateUserWithPatch(Long userId, String patchUserJson) throws UserNotFoundException {
         User user = userRepository.findUserById(userId);
         if (user == null)
@@ -108,6 +151,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
+
+    /**
+     * Deletes a @{link User} given its id
+     *
+     * @param userId the @{link User} id of the user to be deleted
+     */
     public void deleteUser(Long userId) {
         if (userRepository.findUserById(userId) == null)
             throw new UserNotFoundException();
@@ -115,6 +164,13 @@ public class UserService {
         userRepository.deleteById(userId);
     }
 
+
+    /**
+     * Retrieves the GitHub repositories associated to the @{link User} specified by the given id
+     *
+     * @param userId the @{link User} id
+     * @return the list of @{link {@link GHRepositoryOverview}} owned by the specified user
+     */
     public List<GHRepositoryOverview> getRepositoriesOverview(Long userId) {
         User user = userRepository.findUserById(userId);
         if (user == null)

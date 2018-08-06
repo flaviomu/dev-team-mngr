@@ -15,10 +15,20 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import static springfox.documentation.builders.PathSelectors.regex;
 
+
+/**
+ * Defines the Swagger configurations
+ *
+ */
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
 
+    /**
+     * Builds the Swagger API for the application
+     *
+     * @return the builder for the SpringFox framework
+     */
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
@@ -33,6 +43,9 @@ public class SwaggerConfig {
 
     }
 
+    /*
+        Provides the general info regarding the API
+     */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("DEV TEAM MANAGER API")
@@ -44,6 +57,9 @@ public class SwaggerConfig {
                 .build();
     }
 
+    /*
+        Defines the paths for the API builder
+     */
     private Predicate<String> paths() {
         return Predicates.or(regex("/users.*"));
     }
