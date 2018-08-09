@@ -1,4 +1,4 @@
-package com.flaviomu.devteammngr.web;
+package com.flaviomu.devteammngr.web.dto;
 
 /**
  * Defines a GitHub repository overview

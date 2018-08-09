@@ -1,12 +1,10 @@
-package com.flaviomu.devteammngr.web;
+package com.flaviomu.devteammngr.web.controller;
 
 import com.flaviomu.devteammngr.data.entity.User;
-import com.flaviomu.devteammngr.service.external.github.GitHubConnectionService;
+import com.flaviomu.devteammngr.service.external.github.GitHubService;
 import com.flaviomu.devteammngr.service.domain.UserService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
+import com.flaviomu.devteammngr.web.dto.GHRepositoryOverview;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +27,7 @@ public class UserController {
     @Autowired
     private UserService userService;
     @Autowired
-    private GitHubConnectionService gitHubConnectionService;
+    private GitHubService gitHubService;
 
 
     /**
@@ -38,8 +36,11 @@ public class UserController {
      * @param user the @{link User} to be created
      * @return the @{link User} created
      */
-    @ApiOperation(value = "Add a user", response = User.class)
-    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Add a user",
+                  response = User.class)
+    @RequestMapping(method = RequestMethod.POST,
+                    consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+                    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
@@ -52,12 +53,13 @@ public class UserController {
      * @param userId the @{link User} id of the user to be retrieved
      * @return the @{link User} specified by the given id
      */
-    @ApiOperation(value = "Retrieve a user given its 'id' provided in the url", response = User.class)
-    @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "User not found.")
-    })
-    @RequestMapping(value = "/{userId}", method = RequestMethod.GET)
-    @ResponseBody
+    @ApiOperation(value = "Retrieve a user given its 'id' provided in the url",
+                  response = User.class)
+    @ApiResponse(code = 404,
+                 message = "User not found.")
+    @RequestMapping(value = "/{userId}",
+                    method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public User getUser(@PathVariable(value = "userId") Long userId) {
         return userService.getUser(userId);
     }
@@ -68,8 +70,10 @@ public class UserController {
      *
      * @return the list of the @{link User}s existing
      */
-    @ApiOperation(value = "Retrieve all the user existing", response = List.class)
-    @RequestMapping(method = RequestMethod.GET)
+    @ApiOperation(value = "Retrieve all the user existing",
+                  response = List.class)
+    @RequestMapping(method = RequestMethod.GET,
+                    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<User> getUsers() {
         return userService.getUsers();
     }
@@ -82,12 +86,18 @@ public class UserController {
      * @param user the @{link User} info to be saved
      * @return the @{link User} updated
      */
-    @ApiOperation(value = "Update an existing user given its 'id' provided in the url", response = User.class)
+    @ApiOperation(value = "Update an existing user given its 'id' provided in the url",
+                  response = User.class)
     @ApiResponses(value = {
-            @ApiResponse(code = 404, message = "User not found"),
-            @ApiResponse(code = 400, message = "Request and/or BodyRequest not correctly formatted")
+            @ApiResponse(code = 404,
+                         message = "User not found"),
+            @ApiResponse(code = 400,
+                         message = "Request and/or BodyRequest not correctly formatted")
     })
-    @RequestMapping(value = "/{userId}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/{userId}",
+                    method = RequestMethod.PUT,
+                    consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+                    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public User updateUserWithPut(@PathVariable(value = "userId") Long userId, @RequestBody User user) {
         return userService.updateUserWithPut(userId, user);
@@ -101,9 +111,14 @@ public class UserController {
      * @param userJson the @{link User} fields to be saved
      * @return the @{link User} updated
      */
-    @ApiOperation(value = "Update an existing user given its 'id' provided in the url", response = User.class)
-    @ApiResponse(code = 404, message = "User not found")
-    @RequestMapping(value = "/{userId}", method = RequestMethod.PATCH, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Update an existing user given its 'id' provided in the url",
+                  response = User.class)
+    @ApiResponse(code = 404,
+                 message = "User not found")
+    @RequestMapping(value = "/{userId}",
+                    method = RequestMethod.PATCH,
+                    consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
+                    produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public User updateUserWithPatch(@PathVariable(value = "userId") Long userId, @RequestBody String userJson) {
         return userService.updateUserWithPatch(userId, userJson);
@@ -116,8 +131,10 @@ public class UserController {
      * @param userId the @{link User} id of the user to be deleted
      */
     @ApiOperation(value = "Remove a user given its 'id' provided in the url")
-    @ApiResponse(code = 404, message = "User not found")
-    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
+    @ApiResponse(code = 404,
+                 message = "User not found")
+    @RequestMapping(value = "/{userId}",
+                    method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable(value = "userId") Long userId) {
         userService.deleteUser(userId);
@@ -136,12 +153,8 @@ public class UserController {
             @ApiResponse(code = 500, message = "An unexpected error occurred")
     })
     @RequestMapping(value = "/{userId}/repositories", method = RequestMethod.GET)
-    @ResponseBody
     public List<GHRepositoryOverview> getRepositoriesOverview(@PathVariable(value = "userId") Long userId) {
-        log.info(String.valueOf(gitHubConnectionService.getGitHub().hashCode()));
-
         return userService.getRepositoriesOverview(userId);
     }
-
 
 }
