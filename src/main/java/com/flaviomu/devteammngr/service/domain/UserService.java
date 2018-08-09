@@ -4,12 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flaviomu.devteammngr.data.entity.User;
 import com.flaviomu.devteammngr.data.repository.UserRepository;
 import com.flaviomu.devteammngr.exception.BadRequestException;
-import com.flaviomu.devteammngr.exception.InternalServerErrorException;
 import com.flaviomu.devteammngr.exception.UserNotFoundException;
-import com.flaviomu.devteammngr.service.external.github.GitHubConnectionService;
-import com.flaviomu.devteammngr.web.GHRepositoryOverview;
-import org.kohsuke.github.GHUser;
-import org.kohsuke.github.GitHub;
+import com.flaviomu.devteammngr.service.external.github.GitHubService;
+import com.flaviomu.devteammngr.web.dto.GHRepositoryOverview;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +32,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private GitHubConnectionService gitHubConnectionService;
+    private GitHubService gitHubService;
 
 
     /**
@@ -73,7 +70,8 @@ public class UserService {
      * @return the @{link User} created
      */
     public User createUser(User user) {
-        return userRepository.save(user);
+        user = userRepository.save(user);
+        return user;
     }
 
 
@@ -176,29 +174,10 @@ public class UserService {
         if (user == null)
             throw new UserNotFoundException();
 
-        GitHub gitHub = gitHubConnectionService.getGitHub();
-        GHUser ghUser;
-        List<GHRepositoryOverview> ghRepositoryOverviews = new ArrayList<>();
-
         String ghUsername = user.getGitHubUrl().split("/")[user.getGitHubUrl().split("/").length - 1];
-        log.info("Getting Repositories Overviews for GitHub user: " + ghUsername);
+        log.info("Getting GitHub Repositories Overviews for GitHub user: " + ghUsername);
 
-        try {
-            ghUser = gitHub.getUser(ghUsername);
-        } catch (IOException e) {
-            log.error("Error while retrieving GitHub user: " + ghUsername);
-            e.printStackTrace();
-            throw new InternalServerErrorException();
-        }
-
-        ghUser.listRepositories().asList().forEach(ghRepository -> {
-            GHRepositoryOverview overview = new GHRepositoryOverview();
-            overview.setOwnerName(ghRepository.getOwnerName());
-            overview.setName(ghRepository.getName());
-            overview.setDescription(ghRepository.getDescription());
-            overview.setLanguage(ghRepository.getLanguage());
-            ghRepositoryOverviews.add(overview);
-        });
+        List<GHRepositoryOverview> ghRepositoryOverviews = gitHubService.getUserRepositories(ghUsername);
 
         log.debug("GitHub user: " + ghUsername + " - Repositories number: " + ghRepositoryOverviews.size());
 

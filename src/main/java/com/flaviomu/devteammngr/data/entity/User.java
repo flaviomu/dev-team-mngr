@@ -3,6 +3,7 @@ package com.flaviomu.devteammngr.data.entity;
 import com.flaviomu.devteammngr.data.misc.Position;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 
 /**
@@ -31,6 +32,14 @@ public class User {
     @Column(name="GITHUB_URL")
     private String gitHubUrl;
 
+    public User() {}
+
+    public User(String firstname, String surname, Position position, String gitHubUrl) {
+        this.firstname = firstname;
+        this.surname = surname;
+        this.position = position;
+        this.gitHubUrl = gitHubUrl;
+    }
 
     public Long getId() {
         return id;
@@ -71,4 +80,23 @@ public class User {
     public void setGitHubUrl(String gitHubUrl) {
         this.gitHubUrl = gitHubUrl;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) ||
+                Objects.equals(firstname, user.firstname) &&
+                Objects.equals(surname, user.surname) &&
+                position == user.position &&
+                Objects.equals(gitHubUrl, user.gitHubUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstname, surname, position, gitHubUrl);
+    }
+
 }
