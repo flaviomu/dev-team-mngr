@@ -36,8 +36,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
  */
 @RunWith(SpringRunner.class)
 @WebMvcTest(UserController.class)
-//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-//@AutoConfigureMockMvc
 public class UserControllerTest {
 
     private static Logger log = LoggerFactory.getLogger(UserControllerTest.class.getName());
