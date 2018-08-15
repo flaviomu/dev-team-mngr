@@ -1,6 +1,5 @@
 package com.flaviomu.devteammngr.service.domain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.flaviomu.devteammngr.data.entity.User;
 import com.flaviomu.devteammngr.data.misc.Position;
 import com.flaviomu.devteammngr.data.repository.UserRepository;
@@ -28,8 +27,6 @@ import static org.mockito.Mockito.*;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {
-
-    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Mock
     private UserRepository userRepository;
@@ -72,8 +69,8 @@ public class UserServiceTest {
         when(userRepository.findUserById(1L)).thenReturn(user1);
         when(userRepository.findUserById(2L)).thenReturn(user2);
 
-        assertEquals(userRepository.findUserById(1L).getFirstname(), user1.getFirstname());
-        assertEquals(userRepository.findUserById(2L).getSurname(), user2.getSurname());
+        assertEquals(user1.getFirstname(), userRepository.findUserById(1L).getFirstname());
+        assertEquals(user2.getSurname(), userRepository.findUserById(2L).getSurname());
     }
 
 
@@ -89,7 +86,7 @@ public class UserServiceTest {
     public void createUser() {
         when(userRepository.save(user1)).thenReturn(user1);
 
-        assertEquals(userRepository.save(user1).getId(), user1.getId());
+        assertEquals(user1.getId(), userRepository.save(user1).getId());
     }
 
 
@@ -100,23 +97,23 @@ public class UserServiceTest {
         when(userRepository.findUserById(user1.getId())).thenReturn(user1);
         when(userRepository.save(user1)).thenReturn(user1);
 
-        assertEquals(userService.updateUserWithPut(user1.getId(), user1).getFirstname(), user1.getFirstname());
+        assertEquals(user1.getFirstname(), userService.updateUserWithPut(user1.getId(), user1).getFirstname());
     }
 
 
     @Test(expected = BadRequestException.class)
     public void updateUserWithPutAndThrowBadRequestException() {
         user1.setFirstname("User1fnUpdated");
-        user1.setGitHubUrl("null");
+        user1.setGitHubUrl("null"); // creates a bad request
 
         when(userRepository.findUserById(user1.getId())).thenReturn(user1);
 
-        assertEquals(userService.updateUserWithPut(user1.getId(), user1).getFirstname(), user1.getFirstname());
+        assertEquals(user1.getFirstname(), userService.updateUserWithPut(user1.getId(), user1).getFirstname());
     }
 
 
     @Test
-    public void updateUserWithPatch() throws Exception {
+    public void updateUserWithPatch() {
         String user1PatchJson = "{\"firstname\":\"User1fnUpdated\",\"position\":\"INTERMEDIATE_DEV\"}";
 
         user1.setFirstname("User1fnUpdated");           // update the user for the test comparison
@@ -125,8 +122,8 @@ public class UserServiceTest {
         when(userRepository.findUserById(user1.getId())).thenReturn(user1);
         when(userRepository.save(user1)).thenReturn(user1);
 
-        assertEquals(userService.updateUserWithPatch(user1.getId(), user1PatchJson).getFirstname(), user1.getFirstname());
-        assertEquals(userService.updateUserWithPatch(user1.getId(), user1PatchJson).getPosition(), user1.getPosition());
+        assertEquals(user1.getFirstname(), userService.updateUserWithPatch(user1.getId(), user1PatchJson).getFirstname());
+        assertEquals(user1.getPosition(), userService.updateUserWithPatch(user1.getId(), user1PatchJson).getPosition());
     }
 
 
@@ -156,6 +153,6 @@ public class UserServiceTest {
         when(gitHubService.getUserRepositories(ghRepositoryOverview.getOwnerName())).thenReturn(ghRepositoryOverviews);
 
         List<GHRepositoryOverview> ghRepositoryOverviewsReceived = userService.getRepositoriesOverview(user1.getId());
-        assertEquals(ghRepositoryOverviewsReceived.get(0).getName(), ghRepositoryOverview.getName());
+        assertEquals(ghRepositoryOverview.getName(), ghRepositoryOverviewsReceived.get(0).getName());
     }
 }

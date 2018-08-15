@@ -1,6 +1,7 @@
 package com.flaviomu.devteammngr.web.controller;
 
 import com.flaviomu.devteammngr.data.entity.User;
+import com.flaviomu.devteammngr.exception.UserNotFoundException;
 import com.flaviomu.devteammngr.service.external.github.GitHubService;
 import com.flaviomu.devteammngr.service.domain.UserService;
 import com.flaviomu.devteammngr.web.dto.GHRepositoryOverview;
@@ -61,6 +62,17 @@ public class UserController {
                     method = RequestMethod.GET,
                     produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public User getUser(@PathVariable(value = "userId") Long userId) {
+        /*User user;
+        try {
+            user = userService.getUser(userId);
+        }
+        catch(UserNotFoundException e) {
+            log.debug("User not found");
+            throw new UserNotFoundException();
+        }
+
+        return user;*/
+
         return userService.getUser(userId);
     }
 
@@ -119,7 +131,7 @@ public class UserController {
                     method = RequestMethod.PATCH,
                     consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
                     produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public User updateUserWithPatch(@PathVariable(value = "userId") Long userId, @RequestBody String userJson) {
         return userService.updateUserWithPatch(userId, userJson);
     }
@@ -135,7 +147,7 @@ public class UserController {
                  message = "User not found")
     @RequestMapping(value = "/{userId}",
                     method = RequestMethod.DELETE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public void deleteUser(@PathVariable(value = "userId") Long userId) {
         userService.deleteUser(userId);
     }
