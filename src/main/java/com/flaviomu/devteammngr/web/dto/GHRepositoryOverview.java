@@ -51,4 +51,16 @@ public class GHRepositoryOverview {
     public void setLanguage(String language) {
         this.language = language;
     }
+
+
+    @Override
+    public String toString() {
+        return "GHRepositoryOverview{" +
+                "ownerName='" + ownerName + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", language='" + language + '\'' +
+                '}';
+    }
+
 }

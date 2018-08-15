@@ -87,16 +87,29 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) ||
+        return Objects.equals(id, user.id) &&
                 Objects.equals(firstname, user.firstname) &&
                 Objects.equals(surname, user.surname) &&
                 position == user.position &&
                 Objects.equals(gitHubUrl, user.gitHubUrl);
     }
 
+
     @Override
     public int hashCode() {
         return Objects.hash(id, firstname, surname, position, gitHubUrl);
+    }
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstname='" + firstname + '\'' +
+                ", surname='" + surname + '\'' +
+                ", position=" + position +
+                ", gitHubUrl='" + gitHubUrl + '\'' +
+                '}';
     }
 
 }

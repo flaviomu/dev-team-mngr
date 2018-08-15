@@ -66,9 +66,9 @@ public class UserControllerTest {
                                                 .andReturn()
                                                 .getResponse();
 
-        assertEquals(response.getStatus(), HttpStatus.CREATED.value());
-        assertEquals(response.getContentAsString(), objectMapper.writeValueAsString(user));
-        assertEquals(response.getContentAsString(), userJson);
+        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+        assertEquals(objectMapper.writeValueAsString(user), response.getContentAsString());
+        assertEquals(userJson, response.getContentAsString());
     }
 
 
@@ -84,8 +84,8 @@ public class UserControllerTest {
                                                 .andReturn()
                                                 .getResponse();
 
-        assertEquals(response.getStatus(), HttpStatus.OK.value());
-        assertEquals(response.getContentAsString(), objectMapper.writeValueAsString(user));
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(objectMapper.writeValueAsString(user), response.getContentAsString());
     }
 
 
@@ -107,7 +107,7 @@ public class UserControllerTest {
                                                 .getResponse();
 
 
-        assertEquals(response.getStatus(), HttpStatus.OK.value());
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
 
         List usersReceived = objectMapper.readValue(response.getContentAsString(), List.class);
         String user1receivedJson = objectMapper.writeValueAsString(usersReceived.get(0));
@@ -115,8 +115,8 @@ public class UserControllerTest {
         String user2receivedJson = objectMapper.writeValueAsString(usersReceived.get(1));
         User user2Received = objectMapper.readValue(user2receivedJson, User.class);
 
-        assertEquals(user1Received.getId().longValue(), 1L);
-        assertEquals(user2Received.getFirstname(), user2.getFirstname());
+        assertEquals(1L, user1Received.getId().longValue());
+        assertEquals(user2.getFirstname(), user2Received.getFirstname());
     }
 
 
@@ -137,8 +137,8 @@ public class UserControllerTest {
                                                 .andReturn()
                                                 .getResponse();
 
-        assertEquals(response.getStatus(), HttpStatus.CREATED.value());
-        assertEquals(response.getContentAsString(), objectMapper.writeValueAsString(user));
+        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+        assertEquals(objectMapper.writeValueAsString(user), response.getContentAsString());
     }
 
 
@@ -151,7 +151,6 @@ public class UserControllerTest {
 
         User userPatch = new User("UserNameUpdated", "UserSurname", null, "null");
 
-        String userPatchJson = objectMapper.writeValueAsString(userPatch);
         String userPatchJsonOnlyDifferentFields = "{\"firstname\":\"UserNameUpdated\",\"position\":\"SENIOR_DEV\"}";
 
         when(userService.updateUserWithPatch(user.getId(), userPatchJsonOnlyDifferentFields)).thenReturn(user);
@@ -164,8 +163,8 @@ public class UserControllerTest {
                                                 .andReturn()
                                                 .getResponse();
 
-        assertEquals(response.getStatus(), HttpStatus.NO_CONTENT.value());
-        assertEquals(response.getContentAsString(), objectMapper.writeValueAsString(user));
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+        assertEquals(objectMapper.writeValueAsString(user), response.getContentAsString());
     }
 
 
@@ -175,7 +174,7 @@ public class UserControllerTest {
                 .andReturn()
                 .getResponse();
 
-        assertEquals(response.getStatus(), HttpStatus.NO_CONTENT.value());
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 
 
@@ -187,7 +186,7 @@ public class UserControllerTest {
                 .andReturn()
                 .getResponse();
 
-        assertEquals(response.getStatus(), HttpStatus.NOT_FOUND.value());
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
     }
 
 
@@ -213,12 +212,12 @@ public class UserControllerTest {
                                                 .andReturn()
                                                 .getResponse();
 
-        assertEquals(response.getStatus(), HttpStatus.OK.value());
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
 
         List ghRepositoryOverviewsReceived = objectMapper.readValue(response.getContentAsString(), List.class);
         String ghRepositoryOverviewReceivedJson = objectMapper.writeValueAsString(ghRepositoryOverviewsReceived.get(0));
         GHRepositoryOverview ghRepositoryOverviewReceived = objectMapper.readValue(ghRepositoryOverviewReceivedJson, GHRepositoryOverview.class);
 
-        assertEquals(ghRepositoryOverview.getName(), ghRepositoryOverviewReceived.getName());
+        assertEquals(ghRepositoryOverviewReceived.getName(), ghRepositoryOverview.getName());
     }
 }

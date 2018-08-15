@@ -119,7 +119,7 @@ public class UserController {
                     method = RequestMethod.PATCH,
                     consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
                     produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public User updateUserWithPatch(@PathVariable(value = "userId") Long userId, @RequestBody String userJson) {
         return userService.updateUserWithPatch(userId, userJson);
     }
@@ -135,7 +135,7 @@ public class UserController {
                  message = "User not found")
     @RequestMapping(value = "/{userId}",
                     method = RequestMethod.DELETE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public void deleteUser(@PathVariable(value = "userId") Long userId) {
         userService.deleteUser(userId);
     }
