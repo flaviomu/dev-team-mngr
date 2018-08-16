@@ -7,17 +7,19 @@ import com.flaviomu.devteammngr.exception.BadRequestException;
 import com.flaviomu.devteammngr.exception.UserNotFoundException;
 import com.flaviomu.devteammngr.service.external.github.GitHubService;
 import com.flaviomu.devteammngr.web.dto.GHRepositoryOverview;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 
@@ -25,7 +27,7 @@ import static org.mockito.Mockito.*;
  * Defines the tests for the @{link {@link UserService}}
  *
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
     @Mock
@@ -42,7 +44,7 @@ public class UserServiceTest {
     private List<User> initialUsers;
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
         user1 = new User("User1fn", "User1sn", Position.JUNIOR_DEV, "https://github.com/user1");
         user1.setId(1L);
@@ -66,19 +68,20 @@ public class UserServiceTest {
 
     @Test
     public void getExistingUser() {
-        when(userRepository.findUserById(1L)).thenReturn(user1);
-        when(userRepository.findUserById(2L)).thenReturn(user2);
+        lenient().when(userRepository.findUserById(1L)).thenReturn(user1);
+        lenient().when(userRepository.findUserById(2L)).thenReturn(user2);
 
         assertEquals(user1.getFirstname(), userRepository.findUserById(1L).getFirstname());
         assertEquals(user2.getSurname(), userRepository.findUserById(2L).getSurname());
     }
 
 
-    @Test(expected = UserNotFoundException.class)
+    @Test
     public void getNotExistingUser() {
         when(userRepository.findUserById(-1L)).thenThrow(UserNotFoundException.class);
+        Executable codeUnderTest = () -> userRepository.findUserById(-1L);
 
-        userRepository.findUserById(-1L);
+        assertThrows(UserNotFoundException.class, codeUnderTest);
     }
 
 
@@ -101,14 +104,15 @@ public class UserServiceTest {
     }
 
 
-    @Test(expected = BadRequestException.class)
+    @Test
     public void updateUserWithPutAndThrowBadRequestException() {
         user1.setFirstname("User1fnUpdated");
         user1.setGitHubUrl("null"); // creates a bad request
 
         when(userRepository.findUserById(user1.getId())).thenReturn(user1);
+        Executable codeUnderTest = () -> userService.updateUserWithPut(user1.getId(), user1);
 
-        assertEquals(user1.getFirstname(), userService.updateUserWithPut(user1.getId(), user1).getFirstname());
+        assertThrows(BadRequestException.class, codeUnderTest);
     }
 
 

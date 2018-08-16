@@ -7,8 +7,9 @@ import com.flaviomu.devteammngr.exception.UserNotFoundException;
 import com.flaviomu.devteammngr.service.domain.UserService;
 import com.flaviomu.devteammngr.service.external.github.GitHubService;
 import com.flaviomu.devteammngr.web.dto.GHRepositoryOverview;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,24 +18,27 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+
 
 
 /**
  * Defines the tests for the @{link {@link UserController}}
  *
  */
-@RunWith(SpringRunner.class)
+
+@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
 @WebMvcTest(UserController.class)
 public class UserControllerTest {
 
@@ -218,6 +222,6 @@ public class UserControllerTest {
         String ghRepositoryOverviewReceivedJson = objectMapper.writeValueAsString(ghRepositoryOverviewsReceived.get(0));
         GHRepositoryOverview ghRepositoryOverviewReceived = objectMapper.readValue(ghRepositoryOverviewReceivedJson, GHRepositoryOverview.class);
 
-        assertEquals(ghRepositoryOverviewReceived.getName(), ghRepositoryOverview.getName());
+        assertEquals(ghRepositoryOverview.getName(), ghRepositoryOverviewReceived.getName());
     }
 }
