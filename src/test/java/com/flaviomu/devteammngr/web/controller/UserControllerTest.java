@@ -218,6 +218,6 @@ public class UserControllerTest {
         String ghRepositoryOverviewReceivedJson = objectMapper.writeValueAsString(ghRepositoryOverviewsReceived.get(0));
         GHRepositoryOverview ghRepositoryOverviewReceived = objectMapper.readValue(ghRepositoryOverviewReceivedJson, GHRepositoryOverview.class);
 
-        assertEquals(ghRepositoryOverviewReceived.getName(), ghRepositoryOverview.getName());
+        assertEquals(ghRepositoryOverview.getName(), ghRepositoryOverviewReceived.getName());
     }
 }
